@@ -23,5 +23,25 @@ def ServerExit():
     sk.close()
     sys.exit()
 
-
+# "main"
+while True:
+    print('\n\r Waiting to receive message...')
+    data, clientAddr = sk.recvfrom(4096)
+    text = data.decode('utf8')
+    t = text.split()
+    #TODO : fix Invalid syntax (pyflakes E) error 
+    match t[0]:
+        case "get":
+            print("Going to get your file..")
+        case "put":
+            print("Going to put your file..")
+        case "list":
+            print("Going to list..")
+        case "exit":
+            ServerExit()
+        case _:
+            print("Unknown input.")
+            
+print("End of communication, closing program.")
+quit()
 

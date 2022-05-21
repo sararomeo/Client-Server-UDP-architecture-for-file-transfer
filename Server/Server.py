@@ -18,5 +18,10 @@ except sk.error:
     print("Failed to create socket")
     sys.exit()
 
+def ServerExit():
+    print("Server socket closed, not sending any message to Client.")
+    sk.close()
+    sys.exit()
+
 
 

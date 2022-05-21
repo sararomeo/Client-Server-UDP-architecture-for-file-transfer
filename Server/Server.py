@@ -18,6 +18,20 @@ except sk.error:
     print("Failed to create socket")
     sys.exit()
 
+# creates a list with all available file
+def ServerList():
+    print("Trying to get available files list..")
+    
+#L’invio del messaggio di risposta al comando get contenente il file richiesto,
+# se presente, od un opportuno messaggio di errore;
+def ServerGet():
+    print("Trying to get your file..")
+
+#La ricezione di un messaggio put contenente il file da caricare sul server e
+#l’invio di un messaggio di risposta con l’esito dell’operazion
+def ServerPut():
+    print("Trying to put your file..")
+
 def ServerExit():
     print("Server socket closed, not sending any message to Client.")
     sk.close()
@@ -33,10 +47,13 @@ while True:
     match t[0]:
         case "get":
             print("Going to get your file..")
+            ServerGet()
         case "put":
             print("Going to put your file..")
+            ServerPut()
         case "list":
-            print("Going to list..")
+            print("Going to get available files list..")
+            ServerList()
         case "exit":
             ServerExit()
         case _:

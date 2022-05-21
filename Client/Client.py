@@ -9,4 +9,4 @@ try:
     server_address = ('localhost', 10000)
 except sk.error:
     print("Failed to create the client socket")
-    sys.exit
+    sys.exit()

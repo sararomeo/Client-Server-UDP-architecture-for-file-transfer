@@ -25,11 +25,6 @@ def SendMessageToClient(msg):
     msgEn = msg.encode('utf-8')
     sock.sendto(msgEn, clientAddr)
     print ('Sent \"%s\" message to client' % msg)
-    
-def ReceiveMessageFromClient():
-    data, clientAddr = sock.recvfrom(4096)
-    dataDec = data.decode('utf8')
-    print(dataDec)
 
 # creates a list with all available files
 def ServerList():
@@ -42,6 +37,7 @@ def ServerList():
     filesList = []
     for file in F:
         filesList.append(file)
+    filesList.remove('Server.py')
     filesListStr = str(filesList)
     filesListEn = filesListStr.encode('utf-8')
     sock.sendto(filesListEn, clientAddr)
@@ -61,7 +57,6 @@ def ServerGet(filename):
                 break
             # write to the file the bytes we just received
             f.write(bytes_read)
-        ReceiveMessageFromClient()
     else:
         SendMessageToClient("Error: file doesn't exist.")
 

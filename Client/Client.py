@@ -11,12 +11,12 @@ try:
 except sk.error:
     print("Failed to create the client socket")
     sys.exit()
-    
 
+    
 def SendMessage(message):
     messageEncoded = message.encode('utf8')
     sock.sendto(messageEncoded, server_address)
-    print("Sending %s message to server" % msg)
+    print("Sending \"%s\" message to server" % message)
 
 def ReceiveMessage():
     data, server = sock.recvfrom(4096)
@@ -35,6 +35,8 @@ def ClientList():
         ReceiveMessage()
         if not ReceiveMessage():
             break
+    SendMessage("List received")
+
 
 def ClientExit():
     print("Client socket closed, not sending any message to Server.")

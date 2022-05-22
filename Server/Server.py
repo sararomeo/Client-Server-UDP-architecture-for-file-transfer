@@ -25,6 +25,11 @@ def SendMessageToClient(msg):
     msgEn = msg.encode('utf-8')
     sock.sendto(msgEn, clientAddr)
     print ('Sent \"%s\" message to client' % msg)
+    
+def ReceiveMessageFromClient():
+    data, server = sock.recvfrom(BUFFER_SIZE)
+    dataDec = data.decode('utf8')
+    print(dataDec)
 
 # creates a list with all available files
 def ServerList():
@@ -42,6 +47,7 @@ def ServerList():
     filesListEn = filesListStr.encode('utf-8')
     sock.sendto(filesListEn, clientAddr)
     print("List sent from Server")
+    ReceiveMessageFromClient()
 
 #if exists, gets file from server dir and sends msg to client, else sends error
 def ServerGet(filename):

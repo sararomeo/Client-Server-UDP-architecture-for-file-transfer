@@ -12,3 +12,8 @@ except sk.error:
     sys.exit()
     
 msg = input("What message do you want to send? (get 'file_name', put 'file_name', list, exit): ")
+
+def SendMessage(message):
+    messageEncoded = message.encode('utf_8')
+    sk.sendto(messageEncoded, server_address)
+    print("Sending %s message to server" % msg)

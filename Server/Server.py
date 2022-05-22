@@ -3,6 +3,8 @@ import sys
 import os
 #import time
 
+BUFFER_SIZE=4096
+
 # UDP datagram socket creation at server's startup
 try:    
     sock = sk.socket(sk.AF_INET, sk.SOCK_DGRAM)
@@ -41,13 +43,19 @@ def ServerList():
     print("List sent from Server")
 
 #if exists, gets file from server dir and sends msg to client, else sends error
-def ServerGet(g):
+def ServerGet(filename):
     SendMessageToClient("Correct command, trying to get your file..")
-    if os.path.isfile(g):
+    if os.path.isfile(filename):
         SendMessageToClient("File exists.")
-
-        #TODO get
-
+        #get
+        f = open(filename, "wb")
+        while True:
+            bytes_read = sk.recv(BUFFER_SIZE)
+            if not bytes_read:
+                # nothing is received file transmitting is done
+                break
+            # write to the file the bytes we just received
+            f.write(bytes_read)
     else:
         SendMessageToClient("Error: file doesn't exist.")
 
@@ -67,9 +75,9 @@ def ServerExit():
 # listening for incoming datagrams
 while True:
     print('\n\r Waiting to receive message...')
-    data, clientAddr = sk.recvfrom(4096)
+    data, clientAddr = sk.recvfrom(BUFFER_SIZE)
     text = data.decode('utf8')
-    t = text.split(' ')
+    t = text.split()
     command = t[0]
     fileName = t[1]
     if command == "get":
@@ -82,22 +90,6 @@ while True:
         ServerExit()
     else:
         SendMessageToClient("Unknown input.")
-    
-    # match-case should work only with python 3.10.*
-    # match command:
-    #     case "get":
-    #         print("Going to get your file..")
-    #         ServerGet(fileName)
-    #     case "put":
-    #         print("Going to put your file..")
-    #         ServerPut()
-    #     case "list":
-    #         print("Going to get available files list..")
-    #         ServerList()
-    #     case "exit":
-    #         ServerExit()
-    #     case _:
-    #         print("Unknown input.")
         
 print("End of communication, closing program.")
 quit()

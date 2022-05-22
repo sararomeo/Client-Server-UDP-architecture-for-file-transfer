@@ -23,7 +23,7 @@ except sk.error:
 
 def SendMessageToClient(msg):
     msgEn = msg.encode('utf-8')
-    sk.sendto(msgEn, clientAddr)
+    sock.sendto(msgEn, clientAddr)
     print ('Sent \"%s\" message to client' % msg)
 
 # creates a list with all available files
@@ -39,7 +39,7 @@ def ServerList():
         filesList.append(file)
     filesListStr = str(filesList)
     filesListEn = filesListStr.encode('utf-8')
-    sk.sendto(filesListEn, clientAddr)
+    sock.sendto(filesListEn, clientAddr)
     print("List sent from Server")
 
 #if exists, gets file from server dir and sends msg to client, else sends error
@@ -79,8 +79,8 @@ while True:
     text = data.decode('utf8')
     t = text.split()
     command = t[0]
-    fileName = t[1]
     if command == "get":
+        fileName = t[1]
         ServerGet(fileName)
     elif command == "put":
         ServerPut()

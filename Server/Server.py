@@ -50,7 +50,7 @@ def ServerGet(filename):
         #get
         f = open(filename, "wb")
         while True:
-            bytes_read = sk.recv(BUFFER_SIZE)
+            bytes_read = sock.recv(BUFFER_SIZE)
             if not bytes_read:
                 # nothing is received file transmitting is done
                 break
@@ -69,7 +69,7 @@ def ServerPut():
 
 def ServerExit():
     print("Server socket closed, not sending any message to Client.")
-    sk.close()
+    sock.close()
     sys.exit()
 
 # listening for incoming datagrams

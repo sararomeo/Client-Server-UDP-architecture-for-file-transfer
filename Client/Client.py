@@ -10,3 +10,5 @@ try:
 except sk.error:
     print("Failed to create the client socket")
     sys.exit()
+    
+msg = input("What message do you want to send? (get 'file_name', put 'file_name', list, exit): ")

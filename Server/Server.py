@@ -81,7 +81,7 @@ while True:
     elif command == "exit":
         ServerExit()
     else:
-        print("Unknown input.")
+        SendMessageToClient("Unknown input.")
     
     # match-case should work only with python 3.10.*
     # match command:

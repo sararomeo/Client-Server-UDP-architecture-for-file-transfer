@@ -75,7 +75,7 @@ def ServerExit():
 # listening for incoming datagrams
 while True:
     print('\n\r Waiting to receive message...')
-    data, clientAddr = sk.recvfrom(BUFFER_SIZE)
+    data, clientAddr = sock.recvfrom(BUFFER_SIZE)
     text = data.decode('utf8')
     t = text.split()
     command = t[0]

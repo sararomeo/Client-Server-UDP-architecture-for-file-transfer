@@ -27,11 +27,14 @@ def ReceiveMessage():
 
 
 def ReceiveFile():
+    data, server = sock.recvfrom(1024)
+    dataDecoded = data.decode()
+    f = open(dataDecoded, "wb")
+
     while True:
         data, server = sock.recvfrom(1024)
         dataDecoded = data.decode()
-
-        f = open(msg.split()[1], "wb")
+        
         f.write(dataDecoded) 
         
         if not data:
@@ -41,10 +44,10 @@ def ReceiveFile():
 
 def ClientGet():
     while True:
-        ReceiveMessage()
-        if ReceiveMessage() == msg.split()[1]:
-            ReceiveFile()
-        elif not ReceiveMessage():
+        message = ReceiveMessage()
+        print("--" + ReceiveMessage() + "--" + msg.split()[1])
+        ReceiveFile()
+        if not ReceiveMessage():
             break
 
 def ClientPut():

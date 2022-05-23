@@ -2,7 +2,6 @@ import socket
 import sys
 import os
 
-
 try:
     # UDP socket creation
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -73,7 +72,6 @@ def ClientList():
         if "List sent" in msg:
             break
     SendMessage("List received")
-
 
 def ClientExit():
     print("Client socket closed, not sending any message to Server.")

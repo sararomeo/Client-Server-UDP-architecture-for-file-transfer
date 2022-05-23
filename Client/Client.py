@@ -1,4 +1,5 @@
 import socket as sk
+from socket import *
 import sys
 import time
 
@@ -30,26 +31,23 @@ def ReceiveFile():
     data, server = sock.recvfrom(1024)
     f = open(data, "wb")
 
-    while True:
-        data, server = sock.recvfrom(1024)
-        if data.__eq__(b"EOF"):
-            print("not data")
-            f.close()
-            break
- 
-        print("prima write")
-        f.write(data)
-        time.sleep(2)
-        print("dopo write")   
+    data, server = sock.recvfrom(1024)
+    try:
+        while data:       
+            f.write(data)
+            sock.settimeout(2)
+            data, server = sock.recvfrom(1024)
+    except timeout:
+        f.close()
+        print("nosdasdasdassda")
+        sock.settimeout(20)
 
 
 def ClientGet():
     ReceiveMessage()
-    while True:
-        ReceiveMessage()
-        ReceiveFile()
-        print("xd")
-        break
+    ReceiveMessage()
+    ReceiveFile()
+    print("xd")
 
 def ClientPut():
     ReceiveMessage()

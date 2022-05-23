@@ -63,6 +63,7 @@ def ServerGet(filename):
                 print ("sending ...")
                 data = f.read(1024)
         f.close()
+        SendMessageToClient("EOF")
     else:
         SendMessageToClient("Error: file doesn't exist.")
 

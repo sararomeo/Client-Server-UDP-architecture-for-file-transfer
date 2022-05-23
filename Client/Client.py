@@ -28,7 +28,7 @@ def ReceiveMessage():
 
 def ReceiveFile():
     data, server = sock.recvfrom(1024)
-    f = open(data, "wb")
+    f = open(data.decode(), "wb")
 
     bytes = b''
     sock.settimeout(2)       
@@ -64,6 +64,7 @@ def ClientGet():
     ReceiveFile()
 
 def ClientPut():
+    ReceiveMessage()
     SendFile()
 
 def ClientList():

@@ -46,7 +46,6 @@ def ReceiveFile():
 def ClientGet():
     while True:
         ReceiveMessage()
-        print("--" + ReceiveMessage() + "--" + msg.split()[1])
         ReceiveFile()
         print("xd")
         break

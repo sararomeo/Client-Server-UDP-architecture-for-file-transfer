@@ -45,7 +45,10 @@ def ReceiveFile():
 
 def ClientGet():
     ReceiveMessage()
-    ReceiveMessage()
+    message = ReceiveMessage()
+    if message.decode().__contains__("Error"):
+        print("Wrong file name, retry")
+        return
     ReceiveFile()
     print("xd")
 

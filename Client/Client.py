@@ -44,6 +44,7 @@ def ReceiveFile():
 
 
 def ClientGet():
+    ReceiveMessage()
     while True:
         ReceiveMessage()
         ReceiveFile()

@@ -28,27 +28,28 @@ def ReceiveMessage():
 
 def ReceiveFile():
     data, server = sock.recvfrom(1024)
-    dataDecoded = data.decode()
-    f = open(dataDecoded, "wb")
+    f = open(data, "wb")
 
     while True:
         data, server = sock.recvfrom(1024)
-        dataDecoded = data.decode()
-        
-        f.write(dataDecoded) 
-        
-        if not data:
+        if data.__eq__(b"EOF"):
+            print("not data")
             f.close()
-            break           
+            break
+ 
+        print("prima write")
+        f.write(data)
+        time.sleep(2)
+        print("dopo write")   
 
 
 def ClientGet():
     while True:
-        message = ReceiveMessage()
+        ReceiveMessage()
         print("--" + ReceiveMessage() + "--" + msg.split()[1])
         ReceiveFile()
-        if not ReceiveMessage():
-            break
+        print("xd")
+        break
 
 def ClientPut():
     ReceiveMessage()

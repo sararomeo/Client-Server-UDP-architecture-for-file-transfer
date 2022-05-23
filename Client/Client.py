@@ -2,6 +2,7 @@ import socket as sk
 from socket import *
 import sys
 import time
+import os
 
 try:
     # UDP socket creation
@@ -42,6 +43,18 @@ def ReceiveFile():
         print("nosdasdasdassda")
         sock.settimeout(20)
 
+def SendFile():
+    if os.path.isfile(msg.split()[1]):
+        SendMessage("File exists.")
+        f = open(msg.split()[1], "rb")
+        data = f.read(1024)
+        while data:
+            if sock.sendto(data, server_address):
+                print ("sending ...")
+                data = f.read(1024)
+        f.close()
+    else:
+        SendMessage("Error: file not found")
 
 def ClientGet():
     ReceiveMessage()
@@ -53,7 +66,7 @@ def ClientGet():
     print("xd")
 
 def ClientPut():
-    ReceiveMessage()
+    SendFile()
 
 def ClientList():
     while True:

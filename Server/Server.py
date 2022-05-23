@@ -14,7 +14,7 @@ try:
     # port associated to socket
     sock.bind(server_address)
     print("Successful binding. Waiting for Client now.")
-except sk.error:
+except sk.herror:
     print("Failed to create socket")
     sys.exit(-1)
 

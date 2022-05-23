@@ -23,7 +23,7 @@ def ReceiveMessage():
     time.sleep(2)
     dataDecoded = data.decode()
     print(dataDecoded)
-    return dataDecoded
+    return data
 
 
 def ReceiveFile():
@@ -56,8 +56,8 @@ def ClientPut():
 
 def ClientList():
     while True:
-        ReceiveMessage()
-        if not ReceiveMessage():
+        message = ReceiveMessage()
+        if message.__contains__(b"List sent"):
             break
     SendMessage("List received")
 

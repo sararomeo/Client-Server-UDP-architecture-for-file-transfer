@@ -46,7 +46,7 @@ def ServerList():
     filesListStr = str(filesList)
     filesListEn = filesListStr.encode('utf-8')
     sock.sendto(filesListEn, clientAddr)
-    print("List sent from Server")
+    SendMessageToClient("List sent from Server")
     ReceiveMessageFromClient()
 
 #if exists, gets file from server dir and sends msg to client, else sends error

@@ -1,4 +1,5 @@
 import socket as sk
+from socket import *
 import sys
 import os
 #import time
@@ -30,6 +31,20 @@ def ReceiveMessageFromClient():
     data, server = sock.recvfrom(BUFFER_SIZE)
     dataDec = data.decode('utf8')
     print(dataDec)
+
+def ReceiveFile():
+    data, server = sock.recvfrom(1024)
+    f = open(data, "wb")
+
+    data, server = sock.recvfrom(1024)
+    try:
+        while data:       
+            f.write(data)
+            sock.settimeout(2)
+            data, server = sock.recvfrom(1024)
+    except timeout:
+        f.close()
+        sock.settimeout(20)
 
 # creates a list with all available files
 def ServerList():
@@ -63,7 +78,6 @@ def ServerGet(filename):
                 print ("sending ...")
                 data = f.read(1024)
         f.close()
-        SendMessageToClient("EOF")
     else:
         SendMessageToClient("Error: file doesn't exist.")
 
@@ -72,8 +86,12 @@ def ServerGet(filename):
 #l’invio di un messaggio di risposta con l’esito dell’operazion
 def ServerPut():
     SendMessageToClient("Correct command, trying to put your file..")
-    #TODO put
-
+    ReceiveMessageFromClient()
+    message = ReceiveMessageFromClient()
+    if message.decode().__contains__("Error"):
+        print("Wrong file name, retry")
+        return
+    ReceiveFile()
 
 def ServerExit():
     print("Server socket closed, not sending any message to Client.")
@@ -98,6 +116,4 @@ while True:
         ServerExit()
     else:
         SendMessageToClient("Unknown input.")
-   #non ci arriva     
-print("End of communication, closing program.")
-quit()
+

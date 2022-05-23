@@ -55,14 +55,13 @@ def ServerGet(filename):
     if os.path.isfile(filename):
         SendMessageToClient("File exists.")
         #get
-        f = open(filename, "wb")
-        while True:
-            bytes_read = sock.recv(BUFFER_SIZE)
-            if not bytes_read:
-                # nothing is received file transmitting is done
-                break
-            # write to the file the bytes we just received
-            f.write(bytes_read)
+        f=open (filename, "rb") 
+        data = f.read(1024)
+        while (data):
+            if(s.sendto(data,clientAddr)):
+                print ("sending ...")
+                data = f.read(1024)
+        f.close()
     else:
         SendMessageToClient("Error: file doesn't exist.")
 

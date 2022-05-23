@@ -58,7 +58,7 @@ def ServerGet(filename):
         f=open (filename, "rb") 
         data = f.read(1024)
         while (data):
-            if(s.sendto(data,clientAddr)):
+            if(sock.sendto(data,clientAddr)):
                 print ("sending ...")
                 data = f.read(1024)
         f.close()

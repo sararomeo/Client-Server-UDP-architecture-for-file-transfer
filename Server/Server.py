@@ -55,7 +55,8 @@ def ServerGet(filename):
     if os.path.isfile(filename):
         SendMessageToClient("File exists.")
         #get
-        f=open (filename, "rb") 
+        SendMessageToClient(filename)
+        f = open (filename, "rb") 
         data = f.read(1024)
         while (data):
             if(sock.sendto(data,clientAddr)):

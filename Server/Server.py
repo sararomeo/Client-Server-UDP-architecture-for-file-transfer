@@ -1,50 +1,48 @@
 import socket as sk
-from socket import *
 import sys
 import os
-#import time
 
 BUFFER_SIZE=4096
 
 # UDP datagram socket creation at server's startup
 try:    
     sock = sk.socket(sk.AF_INET, sk.SOCK_DGRAM)
+    sock.settimeout(1)
     # localhost current IP address (I guess), port 10000
     server_address = ('localhost', 10000)
     print ('\n\r starting up on %s port %s' % server_address)
     # port associated to socket
     sock.bind(server_address)
     print("Successful binding. Waiting for Client now.")
-    #TODO blocking and timeout
-    #sk.setblocking(0)
-    #sk.settimeout(15)
 except sk.error:
     print("Failed to create socket")
-    sys.exit()
+    sys.exit(-1)
 
 def SendMessageToClient(msg):
     msgEn = msg.encode('utf-8')
     sock.sendto(msgEn, clientAddr)
-    print ('Sent \"%s\" message to client' % msg)
+    print(f'Sent {msg} message to client')
     
 def ReceiveMessageFromClient():
     data, server = sock.recvfrom(BUFFER_SIZE)
     dataDec = data.decode('utf8')
     print(dataDec)
+    return data
 
 def ReceiveFile():
-    data, server = sock.recvfrom(1024)
-    f = open(data, "wb")
-
-    data, server = sock.recvfrom(1024)
+    f = open(t[1], "wb")
+    bytes = b''
+    data = True
+    sock.settimeout(2)
     try:
-        while data:       
-            f.write(data)
-            sock.settimeout(2)
+        while data:
             data, server = sock.recvfrom(1024)
-    except timeout:
+            bytes += data
+    except sk.timeout:
+        sock.settimeout(2)
+    finally:
+        f.write(bytes)
         f.close()
-        sock.settimeout(20)
 
 # creates a list with all available files
 def ServerList():
@@ -73,10 +71,10 @@ def ServerGet(filename):
         SendMessageToClient(filename)
         f = open (filename, "rb") 
         data = f.read(1024)
-        while (data):
-            if(sock.sendto(data,clientAddr)):
-                print ("sending ...")
-                data = f.read(1024)
+        while data:
+            sock.sendto(data,clientAddr)
+            print ("sending ...")
+            data = f.read(1024)
         f.close()
     else:
         SendMessageToClient("Error: file doesn't exist.")
@@ -86,9 +84,8 @@ def ServerGet(filename):
 #l’invio di un messaggio di risposta con l’esito dell’operazion
 def ServerPut():
     SendMessageToClient("Correct command, trying to put your file..")
-    ReceiveMessageFromClient()
     message = ReceiveMessageFromClient()
-    if message.decode().__contains__("Error"):
+    if "Error" in message.decode():
         print("Wrong file name, retry")
         return
     ReceiveFile()
@@ -96,24 +93,27 @@ def ServerPut():
 def ServerExit():
     print("Server socket closed, not sending any message to Client.")
     sock.close()
-    sys.exit()
+    sys.exit(0)
 
 # listening for incoming datagrams
 while True:
-    print('\n\r Waiting to receive message...')
-    data, clientAddr = sock.recvfrom(BUFFER_SIZE)
-    text = data.decode('utf8')
-    t = text.split()
-    command = t[0]
-    if command == "get":
-        fileName = t[1]
-        ServerGet(fileName)
-    elif command == "put":
-        ServerPut()
-    elif command == "list":
-        ServerList()
-    elif command == "exit":
-        ServerExit()
-    else:
-        SendMessageToClient("Unknown input.")
+    try:
+        print('\n\r Waiting to receive message...')
+        data, clientAddr = sock.recvfrom(BUFFER_SIZE)
+        text = data.decode('utf8')
+        t = text.split()
+        command = t[0]
+        if command == "get":
+            fileName = t[1]
+            ServerGet(fileName)
+        elif command == "put":
+            ServerPut()
+        elif command == "list":
+            ServerList()
+        elif command == "exit":
+            ServerExit()
+        else:
+            SendMessageToClient("Unknown input.")
+    except Exception:
+        pass
 

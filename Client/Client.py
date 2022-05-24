@@ -3,10 +3,8 @@ import sys
 import os
 
 try:
-    # UDP socket creation
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     print("Client socket creation")
-    # Defining the server address to send messages
     server_address = ('localhost', 10000)
 except socket.herror:
     print("Failed to create the client socket")

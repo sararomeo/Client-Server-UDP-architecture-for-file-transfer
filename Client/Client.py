@@ -62,6 +62,7 @@ def ClientGet():
 def ClientPut():
     ReceiveMessage()
     SendFile()
+    ReceiveMessage()
 
 def ClientList():
     while True:

@@ -57,8 +57,6 @@ def ClientPut(message, sock, address):
     else:
         SendMessage("Error: file not found",  "server", address, sock)
     sock.settimeout(5)
-    #data, server = sock.recvfrom(4096)
-    #print(data.decode())
     print(ReceiveMessage(sock).decode())
 
 def ServerPut(filename, address, sock):

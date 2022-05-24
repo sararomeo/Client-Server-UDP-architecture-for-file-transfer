@@ -7,7 +7,6 @@ BUFFER_SIZE=4096
 # UDP datagram socket creation at server's startup
 try:    
     sock = sk.socket(sk.AF_INET, sk.SOCK_DGRAM)
-    sock.settimeout(1)
     # localhost current IP address (I guess), port 10000
     server_address = ('localhost', 10000)
     print ('\n\rStarting up on %s port %s' % server_address)

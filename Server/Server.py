@@ -1,19 +1,20 @@
-import socket as sk
+from http import client
+import socket
 import sys
 import os
-
-BUFFER_SIZE=4096
+from .. import Commands
 
 try:    
-    sock = sk.socket(sk.AF_INET, sk.SOCK_DGRAM)
-    server_address = ('localhost', 10000)
-    print ('\n\r starting up on %s port %s' % server_address)
-    sock.bind(server_address)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    client_address = ('localhost', 10000)
+    print (f"\n\r starting up on {client_address[0]} port {client_address[1]}")
+    sock.bind(client_address)
     print("Successful binding. Waiting for Client now.")
-except sk.herror:
+except socket.herror:
     print("Failed to create socket")
     sys.exit(-1)
 
+'''
 def SendMessageToClient(msg):
     msgEn = msg.encode('utf-8')
     sock.sendto(msgEn, clientAddr)
@@ -77,24 +78,27 @@ def ServerExit():
     print("Server socket closed, not sending any message to Client.")
     sock.close()
     sys.exit(0)
+'''
 
 while True:
     try:
         print('\n\r Waiting to receive message...')
-        data, clientAddr = sock.recvfrom(BUFFER_SIZE)
-        text = data.decode('utf8')
-        t = text.split(' ',1)
+        #data, clientAddr = sock.recvfrom(4096)
+        #text = data.decode()
+        #text = Commands.ReceiveMessage(sock).decode()
+        #t = text.split(' ',1)
+        t = Commands.ReceiveMessage(sock).decode().split(' ',1)
         command = t[0]
         if command == "get":
-            fileName = t[1]
-            ServerGet(fileName)
+            #fileName = t[1]
+            Commands.ServerGet(t[1], sock, client_address)
         elif command == "put":
-            ServerPut()
+            Commands.ServerPut(t[1], client_address, sock)
         elif command == "list":
-            ServerList()
+            Commands.ServerList(sock, client_address)
         elif command == "exit":
-            ServerExit()
+            Commands.Exit(sock, "server", "client")
         else:
-            SendMessageToClient("Unknown input.")
+            Commands.SendMessage("Unknown input.", "client", client_address, sock)
     except TimeoutError:
         pass

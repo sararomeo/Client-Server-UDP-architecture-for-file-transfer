@@ -82,8 +82,8 @@ def ServerExit():
     sock.close()
     sys.exit(0)
 
-print('\n\r\tWaiting to receive message...')
 while True:
+    print('\n\r\tWaiting to receive message...')
     try:
         data, clientAddr = sock.recvfrom(BUFFER_SIZE)
         text = data.decode('utf8')
@@ -92,18 +92,14 @@ while True:
         if command == "get":
             fileName = t[1]
             ServerGet(fileName)
-            print('\n\r\tWaiting to receive message...')
         elif command == "put":
             ServerPut()
-            print('\n\r\tWaiting to receive message...')
         elif command == "list":
             ServerList()
-            print('\n\r\tWaiting to receive message...')
         elif command == "exit":
             ServerExit()
         else:
             SendMessageToClient("Unknown input.")
-            print('\n\r\tWaiting to receive message...')
     except Exception:
         pass
 

@@ -5,7 +5,7 @@ import os
 try:
     # UDP socket creation
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.settimeout(1)
+    #sock.settimeout(1)
     print("Client socket creation")
     # Defining the server address to send messages
     server_address = ('localhost', 10000)
@@ -22,7 +22,7 @@ def SendMessage(message):
 def ReceiveMessage():
     data, server = sock.recvfrom(4096)
     dataDecoded = data.decode()
-    print(dataDecoded)
+    print(f"Message received: {dataDecoded}")
     return data
 
 def ReceiveFile():
@@ -48,7 +48,7 @@ def SendFile():
         data = f.read(1024)
         while data:
             sock.sendto(data, server_address)
-            print ("sending ...")
+            print ("Sending file")
             data = f.read(1024)
         f.close()
     else:
@@ -69,9 +69,9 @@ def ClientPut():
 def ClientList():
     while True:
         message = ReceiveMessage()
-        if "List sent" in msg:
+        if "List sent" in message:
             break
-    SendMessage("List received")
+
 
 def ClientExit():
     print("Client socket closed, not sending any message to Server.")

@@ -78,7 +78,7 @@ def ClientExit():
 
 while True:
     try:
-        msg = input("What message do you want to send? (get 'file_name', put 'file_name', list, exit): ")
+        msg = input("\nWhat message do you want to send? (get 'file_name', put 'file_name', list, exit): ")
         SendMessage(msg)
 
         if "get" in msg:

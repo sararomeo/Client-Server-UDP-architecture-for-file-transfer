@@ -72,9 +72,10 @@ def ServerPut():
     SendMessageToClient("Correct command, trying to put your file..")
     message = ReceiveMessageFromClient()
     if "Error" in message.decode():
-        print("Wrong file name, retry")
+        SendMessageToClient("Wrong file name, retry")
         return
     ReceiveFile()
+    SendMessageToClient("File received.")
 
 def ServerExit():
     print("Server socket closed, not sending any message to Client.\n\n")

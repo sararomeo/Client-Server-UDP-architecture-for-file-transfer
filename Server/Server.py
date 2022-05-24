@@ -10,7 +10,7 @@ try:
     sock.settimeout(1)
     # localhost current IP address (I guess), port 10000
     server_address = ('localhost', 10000)
-    print ('\n\r starting up on %s port %s' % server_address)
+    print ('\n\rStarting up on %s port %s' % server_address)
     # port associated to socket
     sock.bind(server_address)
     print("Successful binding. Waiting for Client now.")
@@ -60,7 +60,6 @@ def ServerList():
     filesListEn = filesListStr.encode('utf-8')
     sock.sendto(filesListEn, clientAddr)
     SendMessageToClient("List sent from Server")
-    ReceiveMessageFromClient()
 
 #if exists, gets file from server dir and sends msg to client, else sends error
 def ServerGet(filename):
@@ -91,14 +90,14 @@ def ServerPut():
     ReceiveFile()
 
 def ServerExit():
-    print("Server socket closed, not sending any message to Client.")
+    print("Server socket closed, not sending any message to Client.\n\n")
     sock.close()
     sys.exit(0)
 
 # listening for incoming datagrams
+print('\n\r\tWaiting to receive message...')
 while True:
     try:
-        print('\n\r Waiting to receive message...')
         data, clientAddr = sock.recvfrom(BUFFER_SIZE)
         text = data.decode('utf8')
         t = text.split(' ',1)
@@ -106,14 +105,18 @@ while True:
         if command == "get":
             fileName = t[1]
             ServerGet(fileName)
+            print('\n\r\tWaiting to receive message...')
         elif command == "put":
             ServerPut()
+            print('\n\r\tWaiting to receive message...')
         elif command == "list":
             ServerList()
+            print('\n\r\tWaiting to receive message...')
         elif command == "exit":
             ServerExit()
         else:
             SendMessageToClient("Unknown input.")
+            print('\n\r\tWaiting to receive message...')
     except Exception:
         pass
 

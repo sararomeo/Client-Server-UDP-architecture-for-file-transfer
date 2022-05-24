@@ -1,58 +1,79 @@
-import socket as sk
+import socket
 import sys
-import time
+import os
 
 try:
-    # UDP socket creation
-    sock = sk.socket(sk.AF_INET, sk.SOCK_DGRAM)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     print("Client socket creation")
-    # Defining the server address to send messages
     server_address = ('localhost', 10000)
-except sk.error:
+except socket.herror:
     print("Failed to create the client socket")
-    sys.exit()
+    sys.exit(-1)
 
-    
 def SendMessage(message):
-    messageEncoded = message.encode('utf8')
+    messageEncoded = message.encode()
     sock.sendto(messageEncoded, server_address)
-    print("Sending \"%s\" message to server" % message)
+    print(f"Sending {message} message to server")
 
 def ReceiveMessage():
     data, server = sock.recvfrom(4096)
-    time.sleep(2)
-    dataDecoded = data.decode('utf8')
-    print(dataDecoded)
+    return data
 
 def ClientGet():
-    ReceiveMessage()
+    if "Error" in ReceiveMessage().decode():
+        print("The file doesn't exist")
+        return
+    f = open(msg.split(' ',1)[1], "wb")
+
+    bytes = b''
+    data = True
+    sock.settimeout(2)       
+    try:
+        while data:       
+            data, server = sock.recvfrom(1024)
+            bytes += data
+    except socket.timeout:
+        f.write(bytes)
+        f.close()
 
 def ClientPut():
-    ReceiveMessage()
-
+    if os.path.isfile(msg.split(' ',1)[1]):
+        SendMessage("File exists.")
+        f = open(msg.split(' ',1)[1], "rb")
+        data = f.read(1024)
+        while data:
+            sock.sendto(data, server_address)
+            print ("sending ...")
+            data = f.read(1024)
+        f.close()
+    else:
+        SendMessage("Error: file not found")
+    sock.settimeout(5)
+    data, server = sock.recvfrom(4096)
+    print(data.decode())
+    
 def ClientList():
-    while True:
-        ReceiveMessage()
-        if not ReceiveMessage():
-            break
-    SendMessage("List received")
-
+    print(ReceiveMessage().decode())
 
 def ClientExit():
     print("Client socket closed, not sending any message to Server.")
     sock.close()
-    sys.exit()
+    sys.exit(0)
 
 while True:
-    msg = input("What message do you want to send? (get 'file_name', put 'file_name', list, exit): ")
-    SendMessage(msg)
-    if msg.__contains__("get"):
-        ClientGet()
-    elif msg.__contains__("put"):
-        ClientPut()
-    elif msg.__contains__("list"):
-        ClientList()
-    elif msg.__contains__("exit"):
-        ClientExit()
-    else:
-        ReceiveMessage()
+    try:
+        msg = input("What message do you want to send? (get 'file_name', put 'file_name', list, exit): ")
+        SendMessage(msg)
+
+        if "get" in msg:
+            ClientGet()
+        elif "put" in msg:
+            ClientPut()
+        elif "list" in msg:
+            ClientList()
+        elif "exit" in msg:
+            ClientExit()
+        else:
+            print(ReceiveMessage().decode())
+    except TimeoutError:
+        pass

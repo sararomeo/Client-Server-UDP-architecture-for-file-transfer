@@ -10,7 +10,6 @@ except socket.herror:
     print("Failed to create the client socket")
     sys.exit(-1)
 
-    
 def SendMessage(message):
     messageEncoded = message.encode()
     sock.sendto(messageEncoded, server_address)
@@ -18,58 +17,43 @@ def SendMessage(message):
 
 def ReceiveMessage():
     data, server = sock.recvfrom(4096)
-    dataDecoded = data.decode()
-    print(f"Message received: {dataDecoded}")
     return data
 
-def ReceiveFile():
-    data, server = sock.recvfrom(1024)
-    f = open(data.decode(), "wb")
+def ClientGet():
+    if "Error" in ReceiveMessage().decode():
+        print("The file doesn't exist")
+        return
+    f = open(msg.split(' ',1)[1], "wb")
 
     bytes = b''
+    data = True
     sock.settimeout(2)       
     try:
         while data:       
             data, server = sock.recvfrom(1024)
             bytes += data
     except socket.timeout:
-        sock.settimeout(2)
-    finally:
         f.write(bytes)
         f.close()
 
-def SendFile():
+def ClientPut():
     if os.path.isfile(msg.split(' ',1)[1]):
         SendMessage("File exists.")
         f = open(msg.split(' ',1)[1], "rb")
         data = f.read(1024)
         while data:
             sock.sendto(data, server_address)
-            print ("Sending file")
+            print ("sending ...")
             data = f.read(1024)
         f.close()
     else:
         SendMessage("Error: file not found")
-
-def ClientGet():
-    ReceiveMessage()
-    message = ReceiveMessage()
-    if "Error" in message.decode():
-        print("Wrong file name, retry")
-        return
-    ReceiveFile()
-
-def ClientPut():
-    ReceiveMessage()
-    SendFile()
-    ReceiveMessage()
-
+    sock.settimeout(5)
+    data, server = sock.recvfrom(4096)
+    print(data.decode())
+    
 def ClientList():
-    while True:
-        message = ReceiveMessage()
-        if "List sent" in message:
-            break
-
+    print(ReceiveMessage().decode())
 
 def ClientExit():
     print("Client socket closed, not sending any message to Server.")
@@ -78,7 +62,7 @@ def ClientExit():
 
 while True:
     try:
-        msg = input("\nWhat message do you want to send? (get 'file_name', put 'file_name', list, exit): ")
+        msg = input("What message do you want to send? (get 'file_name', put 'file_name', list, exit): ")
         SendMessage(msg)
 
         if "get" in msg:
@@ -90,6 +74,6 @@ while True:
         elif "exit" in msg:
             ClientExit()
         else:
-            ReceiveMessage()
-    except Exception:
+            print(ReceiveMessage().decode())
+    except TimeoutError:
         pass

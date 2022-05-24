@@ -5,7 +5,6 @@ import os
 try:
     # UDP socket creation
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    #sock.settimeout(1)
     print("Client socket creation")
     # Defining the server address to send messages
     server_address = ('localhost', 10000)

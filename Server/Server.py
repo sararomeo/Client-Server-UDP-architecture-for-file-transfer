@@ -101,7 +101,7 @@ while True:
         print('\n\r Waiting to receive message...')
         data, clientAddr = sock.recvfrom(BUFFER_SIZE)
         text = data.decode('utf8')
-        t = text.split()
+        t = text.split(' ',1)
         command = t[0]
         if command == "get":
             fileName = t[1]

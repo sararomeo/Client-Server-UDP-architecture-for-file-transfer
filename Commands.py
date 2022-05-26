@@ -4,13 +4,15 @@ This file contains all the functions used by the client and the server
 import os
 import sys
 
+BUFFER_SIZE = 4096
+
 def SendMessage(message, name, address, sock):
     messageEncoded = message.encode()
     sock.sendto(messageEncoded, address)
     print(f"Sending {message} message to {name}")
 
 def ReceiveMessage(sock):
-    data, addr = sock.recvfrom(4096)
+    data, addr = sock.recvfrom(BUFFER_SIZE)
     return data
 
 def ClientGet(sock, message):
@@ -24,7 +26,7 @@ def ClientGet(sock, message):
     sock.settimeout(2)       
     try:
         while data:       
-            data, server = sock.recvfrom(1024)
+            data, server = sock.recvfrom(BUFFER_SIZE)
             bytes += data
     except TimeoutError:
         f.write(bytes)
@@ -35,11 +37,11 @@ def ServerGet(filename, sock, address):
     if os.path.isfile(filename):
         SendMessage("File exists.", "client", address, sock)
         f = open (filename, "rb") 
-        data = f.read(1024)
+        data = f.read(BUFFER_SIZE)
         while data:
             sock.sendto(data, address)
             print ("sending ...")
-            data = f.read(1024)
+            data = f.read(BUFFER_SIZE)
         f.close()
     else:
         SendMessage("Error: file doesn't exist.", "client", address, sock)
@@ -48,11 +50,11 @@ def ClientPut(message, sock, address):
     if os.path.isfile(message.split(' ',1)[1]):
         SendMessage("File exists.", "server", address, sock)
         f = open(message.split(' ',1)[1], "rb")
-        data = f.read(1024)
+        data = f.read(BUFFER_SIZE)
         while data:
             sock.sendto(data, address)
             print ("sending ...")
-            data = f.read(1024)
+            data = f.read(BUFFER_SIZE)
         f.close()
     else:
         SendMessage("Error: file not found",  "server", address, sock)
@@ -71,7 +73,7 @@ def ServerPut(filename, address, sock):
     sock.settimeout(2)
     try:
         while data:
-            data, server = sock.recvfrom(1024)
+            data, server = sock.recvfrom(BUFFER_SIZE)
             bytes += data
     except TimeoutError:
         f.write(bytes)

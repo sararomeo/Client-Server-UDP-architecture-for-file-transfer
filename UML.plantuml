@@ -1,0 +1,67 @@
+/'	put
+Per prima cosa viene chiamata la ClientPut() che controllerà se il file
+esiste.
+Se non esiste il processo invia un messaggio di errore al server il quale
+a sua volta manda un'avviso di file non caricato tornando in attesa.
+Nel caso contrario continua aprendo e leggendo il file inviandolo al
+server. Quest'ultimo nella ServerPut() riceverà tutti i pacchetti
+necessari e in seguito li scriverà nel file aperto all'inizio dell'upload,
+inviando infine l'esito positivo dell'operazione che verrà ricevuto dal Client().
+'/
+@startuml Put: file esiste
+    !theme plain
+    title Put: file esiste
+    Server <- Client: File Esiste
+    loop finchè non termina l'invio dei pacchetti
+        Client -> Client: Legge i dati
+        Server <- Client: Invia i dati
+    end
+    Server <- Server: Scrive i dati
+    Server -> Client: Esito positivo caricamento
+@enduml
+@startuml Put: file non esiste
+    !theme plain
+    title Put: file non esiste
+    Server <-- Client: File non esiste
+    Server --> Client: Esito negativo caricamento
+@enduml
+/' 	get
+Il Server chiama ServerGet(): se il file esiste nella directory lo apre
+e lo legge, mandando al Client i pacchetti che lo contengono altrimenti
+invia un messaggio di file non esiste e si rimette in attesa.
+In ClientGet() si riceve un messaggio per sapere se il file esiste o meno.
+Se questo non è presente lo comunica all'utente ed esce dalla funzione,
+altrimenti procede con il download del file. Apre un file, ottiene tutti
+i pacchetti relativi e successivamente li scrive nel file aperto. Questo
+verrà chiuso e l'operazione termina tornando al loop principale.
+'/
+@startuml Get: file esiste
+    !theme plain
+    title Get: file esiste
+    Server -> Client: File Esiste
+    loop finchè non termina l'invio dei pacchetti
+        Server -> Server: Legge i dati
+        Server -> Client: Invia i dati
+    end
+    Client -> Client: Scrive i dati
+@enduml
+@startuml Get: file non esiste
+    !theme plain
+    title Get: file non esiste
+    Server --> Client: File non esiste
+@enduml
+/'	list
+ServerList() si occupa di prelevare il percorso della directory corrente grazie
+alle funzioni della libreria os di Python. Dopodiché verrà creata una lista e
+ciclando i file esistenti nella cartella si inserisce il nome di ognuno.
+Finito di memorizzare l'elenco dei file disponibili, si rimuove quello del sorgente
+Server.py, in quanto non disponibile alla condivisione. Infine la lista viene
+trasformata in una stringa, a sua volta codificata di default in utf-8 per
+l'invio al Client. Questo si occuperà solo di rimanere in attesa del messaggio.
+ '/
+@startuml List
+    !theme plain
+    title Lista
+    Server -> Server: Crea lista con nomi file in directory
+    Server -> Client: Invia lista dei file disponibili
+@enduml

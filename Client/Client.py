@@ -20,13 +20,13 @@ while True:
         message = input("\nWhat message do you want to send? (get 'file_name', put 'file_name', list, exit): ")
         Commands.SendMessage(message, "server", server_address, sock)
 
-        if "get" in message:
+        if message.split(' ',1)[0] == "get":
             Commands.ClientGet(sock, message)
-        elif "put" in message:
+        elif message.split(' ',1)[0] == "put":
             Commands.ClientPut(message, sock, server_address)
-        elif "list" in message:
+        elif message.split(' ',1)[0] == "list":
             Commands.ClientList(sock)
-        elif "exit" in message:
+        elif message.split(' ',1)[0] == "exit":
             Commands.Exit(sock, "client", "server")
         else:
             print(Commands.ReceiveMessage(sock).decode())

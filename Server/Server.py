@@ -1,3 +1,5 @@
+''' 0000969946 sara.romeo3@studio.unibo.it Sara
+0000969874 cristina.zoccola@studio.unibo.it Cristina '''
 import socket
 import sys
 

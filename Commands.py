@@ -1,4 +1,6 @@
-'''
+''' 0000969946 sara.romeo3@studio.unibo.it Sara
+0000969874 cristina.zoccola@studio.unibo.it Cristina
+
 This file contains all the functions used by the client and the server
 '''
 import os
